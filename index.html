@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="container mt-4">
+    <form onsubmit="addUserToLocalStorage(event)" class="border p-3 bg-light shadow">
+        <label>Choose Expense Amount:</label>
+        <input type="number"name="userExpense" id="userExpenseTag"class="form-control mb-2">
+
+        <label>Choose Description:</label>
+        <input type="text"name="userDescription" id="userDescriptionTag"class="form-control mb-2">
+
+        <label>Choose a category:</label>
+        <select name="userCategory" id="userCategoryTag"class="form-control mb-2">
+            <option>electricity</option>
+            <option>movie</option>
+            <option>food</option>
+            <option>fuel</option>
+        </select>
+        <button class="btn btn-primary">Add Expense</button>
+    </form>
+    <ul id="listOfItems" class="list-group mt-4"></ul>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+       function addUserToLocalStorage(event){
+        event.preventDefault();
+        const expenseAmount=event.target.userExpense.value;
+        const expenseDescription=event.target.userDescription.value;
+        const expenseCategory=event.target.userCategory.value;
+
+        const obj ={
+            expenseAmount:expenseAmount,
+            expenseDescription:expenseDescription,
+            expenseCategory:expenseCategory,
+        }
+        localStorage.setItem(expenseDescription,JSON.stringify(obj));
+        displayUserDetails(obj);
+       }
+
+       function displayUserDetails(obj){
+        const parentElement=document.getElementById("listOfItems");
+        const childElement=document.createElement("li");
+        childElement.className = "list-group-item";
+        childElement.textContent=obj.expenseAmount+' - '+obj.expenseCategory+' - '+obj.expenseDescription;
+
+        const deletebtn=document.createElement("input");
+        deletebtn.type="button";
+        deletebtn.value="Delete Expense";
+        deletebtn.className = "btn btn-danger btn-sm ml-2";
+        deletebtn.onclick=()=>{
+            localStorage.removeItem(obj.expenseDescription);
+            parentElement.removeChild(childElement);
+        }
+
+        const editBtn=document.createElement("input");
+        editBtn.type="button";
+        editBtn.value="Edit Expense";
+        editBtn.className = "btn btn-warning btn-sm ml-2";
+        editBtn.onclick=()=>{
+            localStorage.removeItem(obj.expenseDescription);
+            parentElement.removeChild(childElement);
+            document.getElementById("userExpenseTag").value=obj.expenseAmount;
+            document.getElementById("userDescriptionTag").value=obj.expenseDescription;
+            document.getElementById("userCategoryTag").value=obj.expenseCategory;
+        }
+        childElement.appendChild(deletebtn);
+        childElement.appendChild(editBtn);
+        parentElement.appendChild(childElement);
+       }
+    </script>
+</body>
+</html>
